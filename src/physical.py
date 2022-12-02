@@ -72,13 +72,6 @@ def drone_components(**kwargs):
                 break
 
         for k in kwargs:
-            # TODO: MAKE CHECK FOR DUPLICATE NAMING!
-            # if k in keys:
-            #     print(k)
-            #     print("Error: Keyword previously used in same file. Aborting.")
-            # else:
-            #     keys = keys.append(k) /
-
             # insert uav components.
             contents.insert(index,  "    component " + k + " \"" + kwargs[k] + "\"" + " system {\n" + \
                                     "      failure modes [" + k + "_fail " + "\"" + kwargs[k] + " failure\"]\n" +
@@ -117,12 +110,6 @@ def gcs_components(**kwargs):
                 break
 
         for k in kwargs:
-            # TODO: MAKE CHECK FOR DUPLICATE NAMING!
-            # if k in keys:
-            #     print("Error: Keyword previously used in same file. Aborting.")
-            # else:
-            #     keys = keys.append(k)
-
             # insert gcs components.
             contents.insert(index,  "    component " + k + " \"" + kwargs[k] + "\"" + " system {\n" + \
                                     "      failure modes [" + k + "_fail " + "\"" + kwargs[k] + " failure\"]\n" +
