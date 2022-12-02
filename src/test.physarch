@@ -1,0 +1,29 @@
+/* Auto-generated physical architecture file  made using droneDSL */ 
+
+physical decomposition 1.1 test
+
+component uas "Unmanned Aerial System" system {
+  component tx "Transmitter" system {
+    failure modes [tx_loss "TX_communication_loss"]
+  }
+  component uav "Unmanned Aerial Vehicle" system {
+    component pwr "Power_system" system {
+      failure modes [pwr_fail "Power_system failure"]
+    }
+    component fc "Flight_controller" system {
+      failure modes [fc_fail "Flight_controller failure"]
+    }
+    component mr "Multirotor" system {
+      failure modes [mr_fail "Multirotor failure"]
+    }
+  component gcs "Ground Control System" system {
+    component pwr "Power_supply" system {
+      failure modes [pwr_fail "Power_supply failure"]
+    }
+    component gcs_c2 "GCS_C2_link" system {
+      failure modes [gcs_c2_fail "GCS_C2_link failure"]
+    }
+    component hmi "Human_machince_interface" system {
+      failure modes [hmi_fail "Human_machince_interface failure"]
+    }
+}
