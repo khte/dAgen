@@ -45,7 +45,7 @@ def create_physarch(filename):
     file.write("}")
     file.close()
 
-def drone_components(**kwargs):
+def uav_components(**kwargs):
     """
     Function for defining the drone components.
     Valid input examples (add all with space in between): \n
@@ -56,7 +56,6 @@ def drone_components(**kwargs):
         daa=DAA_system
     """
 
-    # global keys
     start_bracket = "{"
     i = 0
     index = 0
@@ -78,9 +77,7 @@ def drone_components(**kwargs):
                                     "    }\n")
         contents.insert(index, "  component uav \"Unmanned Aerial Vehicle\" system {\n")
 
-    with open(fname, "w") as f:
-        contents = "".join(contents)
-        f.write(contents)
+    write_to_file(contents)
 
 def gcs_components(**kwargs):
     """
@@ -94,7 +91,6 @@ def gcs_components(**kwargs):
         pwr=Power_supply
     """
 
-    # global keys
     start_bracket = "{"
     i = 0
     index = 0
@@ -116,9 +112,7 @@ def gcs_components(**kwargs):
                                     "    }\n")
         contents.insert(index, "  component gcs \"Ground Control System\" system {\n")
 
-    with open(fname, "w") as f:
-        contents = "".join(contents)
-        f.write(contents)
+    write_to_file(contents)
 
 def transmitter(bool):
     if bool:
@@ -140,6 +134,9 @@ def transmitter(bool):
             contents.insert(index,  "  component tx \"Transmitter\" system {\n" + \
                                     "    failure modes [tx_loss \"TX_communication_loss\"]\n" + \
                                     "  }\n")
-        with open(fname, "w") as f:
-            contents = "".join(contents)
-            f.write(contents)
+        write_to_file(contents)
+
+def write_to_file(contents):
+    with open(fname, "w") as f:
+        contents = "".join(contents)
+        f.write(contents)

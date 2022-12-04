@@ -5,42 +5,46 @@ function decomposition 1.1 test
 deviation not_available  "Failure (Function and output not available)" 
 
 /* Function hierarchy */ 
-function aviate "Aviate" system { 
-    function est_alt "Estimate altitude" safety 
-    function est_pos "Estimate position (lat, lon)" safety 
-    function ctrl_alt "Control altitude" safety { 
-        deviations [not_available] 
-        allocations [hd_phy.uas.uav.mr] 
-        function ctrl_mr_thrust "Control MR thrust" system 
-    } 
-    function ctrl_lat "Control lateral position" safety { 
-        deviations [not_available] 
-        allocations [hd_phy.uas.uav.mr] 
-        function ctrl_mr_att "Control MR attitude" system 
-    } 
-} 
+function aviate "Aviate" system {
+    function ctrl_lat "Control_lateral_position" system {
+        allocations [test.uas.uav.fc]
+        deviations [not_available]
+    }
+    function ctrl_alt "Control_altitude" system {
+        allocations [test.uas.uav.mr]
+        deviations [not_available]
+    }
+    function est_pos "Estimate_position" system {
+        allocations [test.uas.uav.fc]
+        deviations [not_available]
+    }
+    function est_alt "Estimate_altitude" system {
+        allocations [test.uas.uav.fc]
+        deviations [not_available]
+    }
+}
 
-function navigate "Navigate" system { 
-    function follow_route "Follow route" safety 
-} 
+function navigate "Navigate" system {
+    function follow_route "Follow_route" system {
+        allocations [test.uas.uav.fc]
+        deviations [not_available]
+    }
+}
 
-function communicate "Communicate" system { 
-    function c2 "C2 link communication" safety { 
-        eviations [not_available] 
-        llocations [hd_phy.uas.uav.uav_c2, hd_phy.uas.gcs.gcs_c2] 
-    } 
-    function hmi "Provide HMI for operator" safety { 
-        deviations [not_available] 
-        allocations [hd_phy.uas.gcs.gcs_hmi] 
-    } 
-function pilot "Remote pilot control by TX" safety { 
-    deviations [not_available] 
-    allocations [hd_phy.uas.tx] 
-    } 
-} 
-
-function daa "Detect And Avoid" safety { 
-    deviations [not_available] 
-    allocations [hd_phy.uas.uav.daa] 
-    function detect_gaa "Detect third party general aviation" safety 
+function communicate "Communicate" system {
+    function daa "Detect_and_avoid" system {
+        deviations [not_available]
+    }
+    function pilot "Remote_pilot_control" system {
+        allocations [test.uas.tx]
+        deviations [not_available]
+    }
+    function hmi "HMI_system" system {
+        allocations [test.uas.gcs.hmi]
+        deviations [not_available]
+    }
+    function c2 "C2_link_communication" system {
+        allocations [test.uas.uav.uav_c2]
+        deviations [not_available]
+    }
 }

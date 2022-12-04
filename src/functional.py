@@ -43,6 +43,12 @@ def create_funcspec(filename):
     file.write("/* Default Deviation Hierarchy */ \n")
     file.write("deviation not_available  \"Failure (Function and output not available)\" \n\n")
     file.write("/* Function hierarchy */ \n")
+    file.write("function aviate \"Aviate\" system {\n")
+    file.write("}\n\n")
+    file.write("function navigate \"Navigate\" system {\n")
+    file.write("}\n\n")
+    file.write("function communicate \"Communicate\" system {\n")
+    file.write("}")
     file.close()
 
 def add_functions(*args, **kwargs):
@@ -104,6 +110,78 @@ def add_functions(*args, **kwargs):
                                         "    deviations [not_available] \n" + \
                                         "} \n\n")
 
+    with open(fname, "w") as f:
+        contents = "".join(contents)
+        f.write(contents)
+
+def aviate_functions(**kwargs):
+    """
+    Function for defining the avaiate functions.
+    Valid input examples (add all with space in between): \n
+        est_alt=Estimate_altitude
+        est_pos=Estimate_position
+    """
+    insert_function("Aviate", **kwargs)
+
+def navigate_functions(**kwargs):
+    """
+    Function for defining the avaiate functions.
+    Valid input examples (add all with space in between): \n
+        follow_route=Follow_route
+    """
+    insert_function("Navigate", **kwargs)
+
+def communicate_functions(**kwargs):
+    """
+    Function for defining the avaiate functions.
+    Valid input examples (add all with space in between): \n
+        c2=C2_link_communication
+        hmi=Human_machince_interface
+    """
+    insert_function("Communicate", **kwargs)
+
+def allocate(**kwargs):
+    """
+    """
+    with open(fname, "r") as f:
+        contents = f.readlines()
+
+        for k in kwargs:
+            i = 0
+            index = 0
+            for line in contents:
+                i = i + 1
+                if k in line:
+                    index = i
+                    break
+            contents.insert(index, "        allocations [" + kwargs[k] + "]\n")
+
+    write_to_file(contents)
+
+def insert_function(hej, **kwargs):
+    start_keyword = hej
+    i = 0
+    index = 0
+
+    with open(fname, "r") as f:
+        contents = f.readlines()
+
+        # find the keyword to insert module after it.
+        for line in contents:
+            i = i + 1
+            if start_keyword in line:
+                index = i
+                break
+
+        for k in kwargs:
+            # insert uav components.
+            contents.insert(index,  "    function " + k + " \"" + kwargs[k] + "\"" + " system {\n" + \
+                                    "        deviations [not_available]\n" + \
+                                    "    }\n")
+
+    write_to_file(contents)
+
+def write_to_file(contents):
     with open(fname, "w") as f:
         contents = "".join(contents)
         f.write(contents)
