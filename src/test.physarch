@@ -10,14 +10,8 @@ component uas "Unmanned Aerial System" system {
     component pwr "Power_system" system {
       failure modes [pwr_fail "Power_system failure"]
     }
-    component uav_c2 "UAV_C2_link" system {
-      failure modes [uav_c2_fail "UAV_C2_link failure"]
-    }
     component fc "Flight_controller" system {
       failure modes [fc_fail "Flight_controller failure"]
-    }
-    component daa "DAA_system" system {
-      failure modes [daa_fail "DAA_system failure"]
     }
     component mr "Multirotor" system {
       failure modes [mr_fail "Multirotor failure"]

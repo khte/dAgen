@@ -138,7 +138,7 @@ def transmitter(bool):
                     break
             # insert transmitter component.
             contents.insert(index,  "  component tx \"Transmitter\" system {\n" + \
-                                    "    failure modes [tx_failure \"Transmitter failure\"]\n" + \
+                                    "    failure modes [tx_loss \"TX_communication_loss\"]\n" + \
                                     "  }\n")
         with open(fname, "w") as f:
             contents = "".join(contents)
