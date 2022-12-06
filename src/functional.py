@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 #/****************************************************************************
-# Functional architecture module
+# Functional specification module
 # Copyright (c) 2022, Kristian Husum Laursen <kristian.h.laursen@gmail.com>
 #
 # All rights reserved.
