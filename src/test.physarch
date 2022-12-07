@@ -1,6 +1,22 @@
-/* Auto-generated physical architecture file  made using droneDSL */ 
+/* Auto-generated physical architecture file  made using dAgen */ 
 
 physical decomposition 1.1 test
 
 component uas "Unmanned Aerial System" system {
+    component uav "Unmanned_aerial_vehicle" system {
+        component fc "Flight_controller" system {
+            failure modes [fc_fail "Flight_controller failure"]
+        }
+        component mr "Multirotor" system {
+            failure modes [mr_fail "Multirotor failure"]
+        }
+    }
+    component hej "Unmanned_aerial_vehicle" system {
+        component fc "Flight_controller" system {
+            failure modes [fc_fail "Flight_controller failure"]
+        }
+        component mr "Multirotor" system {
+            failure modes [mr_fail "Multirotor failure"]
+        }
+    }
 }

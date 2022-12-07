@@ -28,115 +28,120 @@
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #****************************************************************************/
 
-fname = ""
-# keys = []
+debug = False
+
+fname = "" # the file name, global to be accessible by all funtions. Future work: classes!
 
 def create_physarch(filename):
     """
     Function for creating the physical architecture file. Must be called before
-    other functions. Input: filename
+    other functions. If a file with the same name exists it is overwritten.
+    Input: filename without extension.
     """
-    global fname
+    global f, fname
     fname = filename + ".physarch"
-    file = open(fname, "w")
-    file.write("/* Auto-generated physical architecture file  made using droneDSL */ \n\n")
-    file.write("physical decomposition 1.1 " + filename + "\n\n")
-    file.write("component uas \"Unmanned Aerial System\" system {\n")
-    file.write("}")
-    file.close()
+    f = open(fname, "w")
+    # write start text plus outer wrapper component uas to empty file
+    f.write("/* Auto-generated physical architecture file  made using dAgen */ \n\n")
+    f.write("physical decomposition 1.1 " + filename + "\n\n")
+    f.write("component uas \"Unmanned Aerial System\" system {\n")
+    f.write("}")
+    f.close()
 
-def uav_components(**kwargs):
+def load_physarch(filename):
+    global f, fname
+    fname = filename + ".physarch"
+    try:
+        f = open(fname, "r")
+        f.close()
+
+    except Exception as e:
+        print(e)
+
+def add_component(*args, **kwargs):
     """
-    Function for defining the drone components.
-    Valid input examples (add all with space in between): \n
-        mr=Multirotor
-        fc=Flight_controller
-        pwr=Power_system
-        uav_c2=UAV_C2_link
-        daa=DAA_system
+    Function for adding component. If the root component does not exist, it is created.
+    Input: [root component key] [root component descriptor] [component=descriptor component=descriptor (add as many as desired)]
+    If no components except the root component is defined, and it does not already exist, an empty root component is created.
     """
-
-    start_bracket = "{"
-    i = 0
-    index = 0
-
-    with open(fname, "r") as f:
-        contents = f.readlines()
-
-        # find the first start bracket to insert module after it.
-        for line in contents:
-            i = i + 1
-            if start_bracket in line:
-                index = i
-                break
-
-        for k in kwargs:
-            # insert uav components.
-            contents.insert(index,  "    component " + k + " \"" + kwargs[k] + "\"" + " system {\n" + \
-                                    "      failure modes [" + k + "_fail " + "\"" + kwargs[k] + " failure\"]\n" +
-                                    "    }\n")
-        contents.insert(index, "  component uav \"Unmanned Aerial Vehicle\" system {\n")
-
-    write_to_file(contents)
-
-def gcs_components(**kwargs):
-    """
-    Function for defining the GCS components.
-    Valid inputs consist of a keyword and a description, with a space in between
-    each pair.
-
-    Examples : \n
-        hmi=Human_machince_interface
-        gcs_c2=GCS_C2_link
-        pwr=Power_supply
-    """
-
-    start_bracket = "{"
-    i = 0
-    index = 0
-
-    with open(fname, "r") as f:
-        contents = f.readlines()
-
-        # find the first start bracket to insert module after it.
-        for line in contents:
-            i = i + 1
-            if start_bracket in line:
-                index = i
-                break
-
-        for k in kwargs:
-            # insert gcs components.
-            contents.insert(index,  "    component " + k + " \"" + kwargs[k] + "\"" + " system {\n" + \
-                                    "      failure modes [" + k + "_fail " + "\"" + kwargs[k] + " failure\"]\n" +
-                                    "    }\n")
-        contents.insert(index, "  component gcs \"Ground Control System\" system {\n")
-
-    write_to_file(contents)
-
-def transmitter(bool):
-    if bool:
-        start_bracket = "{"
-
-        i = 0
-        index = 0
-
-        with open(fname, "r") as f:
+    if(len(args) > 2):
+        print("[Error] More than one root component and descriptor defined: " + str(args))
+    elif(len(args) < 2):
+        print("[Error] No root component with descriptor defined")
+    else:
+        try:
+            f = open(fname, "r")
             contents = f.readlines()
+        except:
+            print("[Error] Could not add functions. File does not exist")
 
-            # find the first start bracket to insert module after it.
+        # iterator and check
+        i = 0
+        root_not_found = 1
+
+        # tabs for proper indentation
+        tab = "    "
+        tabs = 2
+
+        # container for already existing keys
+        existing_keys = []
+
+        # look through file for root component
+        for line in contents:
+            i = i + 1
+            # if(root_not_found):
+            if args[0] in line:
+                if(debug):
+                    print("Root component found on line: " + str(i))
+                # compute indents based on root component indentation
+                indents = line.index(args[0]) - 6
+                tabs = int(indents / 4)
+                # find end of component to know when to stop looking for subcomponents
+                indents = tab * (tabs - 1)
+                end_of_component = indents + "}"
+                # set flag and index
+                root_not_found = 0
+                break
+
+        # if root component was found, find end of component line
+        if not(root_not_found):
+            j = 0
             for line in contents:
-                i = i + 1
-                if start_bracket in line:
-                    index = i
+                j = j + 1
+                if j > i and line.startswith(end_of_component):
                     break
-            # insert transmitter component.
-            contents.insert(index,  "  component tx \"Transmitter\" system {\n" + \
-                                    "    failure modes [tx_loss \"TX_communication_loss\"]\n" + \
-                                    "  }\n")
+
+            # check if input keys already exist in the root component
+            x = 0
+            for line in contents:
+                x = x + 1
+                # only check in the specific component, allowing for identical across components
+                if(x > i and x < j):
+                    for k in kwargs:
+                        check = "component " + k
+                        if check in line:
+                            existing_keys.append(k)
+
+        # if the root component does not exist, add end bracket for it
+        if(root_not_found):
+            contents.insert(i - root_not_found, tab + "}\n")
+
+        # insert uav components.
+        for k in kwargs:
+            # if key already exists, don't insert, obviously
+            if k not in existing_keys:
+                contents.insert(i - root_not_found, tab*tabs + "component " + k + " \"" + kwargs[k] + "\"" + " system {\n" + \
+                                        tab*(tabs + 1) + "failure modes [" + k + "_fail " + "\"" + kwargs[k] + " failure\"]\n" + \
+                                        tab*tabs + "}\n")
+
+        # if the root component does not exist, create it.
+        if(root_not_found):
+            contents.insert(i - root_not_found, tab + "component " + args[0] + " \"" + args[1] + "\" system {" + "\n")
+
         write_to_file(contents)
 
 def write_to_file(contents):
     with open(fname, "w") as f:
         contents = "".join(contents)
         f.write(contents)
+        f.close()

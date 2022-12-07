@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 #/****************************************************************************
-# droneDSL
+# dAgen
 # Copyright (c) 2022, Kristian Husum Laursen <kristian.h.laursen@gmail.com>
 #
 # All rights reserved.
@@ -32,16 +32,16 @@
 import sys, os
 import importlib
 
-def get_args(dsl_args):
-    # split DSL arguments into an args list and a kwargs dictionary
+def get_args(gen_args):
+    # split generator arguments into an args list and a kwargs dictionary
     args = []
     kwargs = {}
-    for dsl_arg in dsl_args:
-        if '=' in dsl_arg:
-            k, v = dsl_arg.split('=', 1)
+    for gen_arg in gen_args:
+        if '=' in gen_arg:
+            k, v = gen_arg.split('=', 1)
             kwargs[k] = v
         else:
-            args.append(dsl_arg)
+            args.append(gen_arg)
     return args, kwargs
 
 def get_help(module_name):
@@ -55,7 +55,7 @@ def get_help(module_name):
 
 # input file is added as argument to the script
 if len(sys.argv) != 2:
-    print('usage 1: %s <input.dsl>' % sys.argv[0])
+    print('usage 1: %s <input.gen>' % sys.argv[0])
     print('usage 2: %s help=<module_name>' % sys.argv[0])
     sys.exit(1)
 

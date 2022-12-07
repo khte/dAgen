@@ -38,7 +38,7 @@ def create_funcspec(filename):
     global fname
     fname = filename + ".funcspec"
     file = open(fname, "w")
-    file.write("/* Auto-generated function decomposition file made using droneDSL */ \n")
+    file.write("/* Auto-generated function decomposition file made using dAgen */ \n")
     file.write("function decomposition 1.1 " + filename + "\n\n")
     file.write("/* Default Deviation Hierarchy */ \n")
     file.write("deviation not_available  \"Failure (Function and output not available)\" \n\n")
@@ -140,24 +140,6 @@ def communicate_functions(**kwargs):
     """
     insert_function("Communicate", **kwargs)
 
-def allocate(**kwargs):
-    """
-    """
-    with open(fname, "r") as f:
-        contents = f.readlines()
-
-        for k in kwargs:
-            i = 0
-            index = 0
-            for line in contents:
-                i = i + 1
-                if k in line:
-                    index = i
-                    break
-            contents.insert(index, "        allocations [" + kwargs[k] + "]\n")
-
-    write_to_file(contents)
-
 def insert_function(hej, **kwargs):
     start_keyword = hej
     i = 0
@@ -178,6 +160,24 @@ def insert_function(hej, **kwargs):
             contents.insert(index,  "    function " + k + " \"" + kwargs[k] + "\"" + " system {\n" + \
                                     "        deviations [not_available]\n" + \
                                     "    }\n")
+
+    write_to_file(contents)
+
+def allocate(**kwargs):
+    """
+    """
+    with open(fname, "r") as f:
+        contents = f.readlines()
+
+        for k in kwargs:
+            i = 0
+            index = 0
+            for line in contents:
+                i = i + 1
+                if k in line:
+                    index = i
+                    break
+            contents.insert(index, "        allocations [" + kwargs[k] + "]\n")
 
     write_to_file(contents)
 
