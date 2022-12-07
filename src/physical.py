@@ -44,7 +44,7 @@ def create_physarch(filename):
     # write start text plus outer wrapper component uas to empty file
     f.write("/* Auto-generated physical architecture file  made using dAgen */ \n\n")
     f.write("physical decomposition 1.1 " + filename + "\n\n")
-    f.write("component uas \"Unmanned Aerial System\" system {\n")
+    f.write("component uas \"Unmanned_aerial_system\" system {\n")
     f.write("}")
     f.close()
 

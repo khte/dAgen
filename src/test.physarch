@@ -2,7 +2,7 @@
 
 physical decomposition 1.1 test
 
-component uas "Unmanned Aerial System" system {
+component uas "Unmanned_aerial_system" system {
     component uav "Unmanned_aerial_vehicle" system {
         component daa "DAA_system" system {
             failure modes [daa_fail "DAA_system failure"]
