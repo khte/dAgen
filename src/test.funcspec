@@ -1,4 +1,4 @@
-/* Auto-generated function decomposition file made using dAgen */ 
+/* Auto-generated functional specification file made using dAgen */ 
 function decomposition 1.1 test
 
 /* Default Deviation Hierarchy */ 
@@ -8,43 +8,44 @@ deviation not_available  "Failure (Function and output not available)"
 function aviate "Aviate" system {
     function ctrl_lat "Control_lateral_position" system {
         allocations [test.uas.uav.fc]
-        deviations [not_available]
+        deviations [not_available] 
     }
     function ctrl_alt "Control_altitude" system {
         allocations [test.uas.uav.mr]
-        deviations [not_available]
+        deviations [not_available] 
     }
     function est_pos "Estimate_position" system {
         allocations [test.uas.uav.fc]
-        deviations [not_available]
+        deviations [not_available] 
     }
     function est_alt "Estimate_altitude" system {
         allocations [test.uas.uav.fc]
-        deviations [not_available]
+        deviations [not_available] 
     }
 }
 
 function navigate "Navigate" system {
     function follow_route "Follow_route" system {
         allocations [test.uas.uav.fc]
-        deviations [not_available]
+        deviations [not_available] 
     }
 }
 
 function communicate "Communicate" system {
     function daa "Detect_and_avoid" system {
-        deviations [not_available]
+        deviations [not_available] 
     }
     function pilot "Remote_pilot_control" system {
         allocations [test.uas.tx]
-        deviations [not_available]
+        deviations [not_available] 
     }
     function hmi "HMI_system" system {
         allocations [test.uas.gcs.hmi]
-        deviations [not_available]
+        deviations [not_available] 
     }
     function c2 "C2_link_communication" system {
         allocations [test.uas.uav.uav_c2]
-        deviations [not_available]
+        deviations [not_available] 
     }
 }
+

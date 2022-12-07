@@ -49,6 +49,11 @@ def create_physarch(filename):
     f.close()
 
 def load_physarch(filename):
+    """
+    Function for loading the physical architecture file. Must be called before
+    other functions, if create_physarch is not used.
+    Input: filename without extension.
+    """
     global fname
     fname = filename + ".physarch"
     try:
@@ -95,6 +100,7 @@ def add_component(*args, **kwargs):
                     print("Root component found on line: " + str(i))
                 # compute indents based on root component indentation
                 indents = line.index(args[0]) - 6
+                print(indents)
                 tabs = int(indents / 4)
                 # find end of component to know when to stop looking for subcomponents
                 indents = tab * (tabs - 1)

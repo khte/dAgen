@@ -32,140 +32,119 @@ fname = ""
 
 def create_funcspec(filename):
     """
-    Function for creating the functional specification file. Must be called before
-    other functions. Input: filename
+    Function for creating the functional decomposition file. Must be called before
+    other functions. If a file with the same name exists it is overwritten.
+    Input: filename without extension.
     """
     global fname
     fname = filename + ".funcspec"
-    file = open(fname, "w")
-    file.write("/* Auto-generated function decomposition file made using dAgen */ \n")
-    file.write("function decomposition 1.1 " + filename + "\n\n")
-    file.write("/* Default Deviation Hierarchy */ \n")
-    file.write("deviation not_available  \"Failure (Function and output not available)\" \n\n")
-    file.write("/* Function hierarchy */ \n")
-    file.write("function aviate \"Aviate\" system {\n")
-    file.write("}\n\n")
-    file.write("function navigate \"Navigate\" system {\n")
-    file.write("}\n\n")
-    file.write("function communicate \"Communicate\" system {\n")
-    file.write("}")
-    file.close()
+    f = open(fname, "w")
+    f.write("/* Auto-generated functional specification file made using dAgen */ \n")
+    f.write("function decomposition 1.1 " + filename + "\n\n")
+    f.write("/* Default Deviation Hierarchy */ \n")
+    f.write("deviation not_available  \"Failure (Function and output not available)\" \n\n")
+    f.write("/* Function hierarchy */ \n")
+    f.close()
 
-def add_functions(*args, **kwargs):
+def load_funcspec(filename):
     """
-    Function for defining the drone functions.
-    If standard layout is wanted, input only std (requires the std functions found in the docstring for drone_components and gcs_components).
-    If custom functions are wanted those are input instead. Valid input examples are:
-        aviate=Aviate
-        navigate=Navigate
-        communicate=Communicate
+    Function for loading the functional specification file. Must be called before
+    other functions, if create_funcspec is not used.
+    Input: filename without extension.
     """
+    global fname
+    fname = filename + ".funcspec"
+    try:
+        f = open(fname, "r")
+        f.close()
 
-    with open(fname, "r") as f:
-        contents = f.readlines()
+    except Exception as e:
+        print(e)
 
-        if(args[0] == 'std'):
-             # 999 to ensure placement last in file.
-            contents.insert(999,"function aviate \"Aviate\" system { \n" + \
-                                "    function est_alt \"Estimate altitude\" safety \n" + \
-                                "    function est_pos \"Estimate position (lat, lon)\" safety \n" + \
-                                "    function ctrl_alt \"Control altitude\" safety { \n" + \
-                                "        deviations [not_available] \n" + \
-                                "        allocations [hd_phy.uas.uav.mr] \n" + \
-                                "        function ctrl_mr_thrust \"Control MR thrust\" system \n" + \
-                                "    } \n" + \
-                                "    function ctrl_lat \"Control lateral position\" safety { \n" + \
-                                "        deviations [not_available] \n" + \
-                                "        allocations [hd_phy.uas.uav.mr] \n" + \
-                                "        function ctrl_mr_att \"Control MR attitude\" system \n" + \
-                                "    } \n" + \
-                                "} \n\n" + \
-                                "function navigate \"Navigate\" system { \n" + \
-                                "    function follow_route \"Follow route\" safety \n" + \
-                                "} \n\n" + \
-                                "function communicate \"Communicate\" system { \n" + \
-                                "    function c2 \"C2 link communication\" safety { \n" + \
-                                "        eviations [not_available] \n" + \
-                                "        llocations [hd_phy.uas.uav.uav_c2, hd_phy.uas.gcs.gcs_c2] \n" + \
-                                "    } \n" + \
-                                "    function hmi \"Provide HMI for operator\" safety { \n" + \
-                                "        deviations [not_available] \n" + \
-                                "        allocations [hd_phy.uas.gcs.gcs_hmi] \n" + \
-                                "    } \n" + \
-                                "function pilot \"Remote pilot control by TX\" safety { \n" + \
-                                "    deviations [not_available] \n" + \
-                                "    allocations [hd_phy.uas.tx] \n" + \
-                                "    } \n" + \
-                                "} \n\n" + \
-                                "function daa \"Detect And Avoid\" safety { \n" + \
-                                "    deviations [not_available] \n" + \
-                                "    allocations [hd_phy.uas.uav.daa] \n" + \
-                                "    function detect_gaa \"Detect third party general aviation\" safety \n" + \
-                                "}")
+def add_function(*args, **kwargs):
+    if(len(args) > 2):
+        print("[Error] More than one root function and descriptor defined: " + str(args))
+    elif(len(args) < 2):
+        print("[Error] No root function with descriptor defined")
+    else:
+        try:
+            f = open(fname, "r")
+            contents = f.readlines()
+        except:
+            print("[Error] Could not add function. File does not exist")
 
-        else:
-            for k in kwargs:
-                # insert functions.
-                contents.insert(index,  "function " + k + " \"" + kwargs[k] + "\"" + " system {\n" + \
-                                        "    deviations [not_available] \n" + \
-                                        "} \n\n")
+        # iterator and check
+        i = 0
+        root_not_found = 1
 
-    with open(fname, "w") as f:
-        contents = "".join(contents)
-        f.write(contents)
+        # tabs for proper indentation
+        tab = "    "
+        tabs = 1
 
-def aviate_functions(**kwargs):
-    """
-    Function for defining the avaiate functions.
-    Valid input examples (add all with space in between): \n
-        est_alt=Estimate_altitude
-        est_pos=Estimate_position
-    """
-    insert_function("Aviate", **kwargs)
+        # container for already existing keys
+        existing_keys = []
 
-def navigate_functions(**kwargs):
-    """
-    Function for defining the avaiate functions.
-    Valid input examples (add all with space in between): \n
-        follow_route=Follow_route
-    """
-    insert_function("Navigate", **kwargs)
-
-def communicate_functions(**kwargs):
-    """
-    Function for defining the avaiate functions.
-    Valid input examples (add all with space in between): \n
-        c2=C2_link_communication
-        hmi=Human_machince_interface
-    """
-    insert_function("Communicate", **kwargs)
-
-def insert_function(hej, **kwargs):
-    start_keyword = hej
-    i = 0
-    index = 0
-
-    with open(fname, "r") as f:
-        contents = f.readlines()
-
-        # find the keyword to insert module after it.
+        # look through file for root component
         for line in contents:
             i = i + 1
-            if start_keyword in line:
-                index = i
+            # if(root_not_found):
+            if args[0] in line:
+                # compute indents based on root component indentation
+                indents = line.index(args[0]) - 6
+                tabs = int(indents / 4)
+                # find end of component to know when to stop looking for subcomponents
+                indents = tab * (tabs - 1)
+                end_of_function = indents + "}"
+                # set flag and index
+                root_not_found = 0
                 break
 
-        for k in kwargs:
-            # insert uav components.
-            contents.insert(index,  "    function " + k + " \"" + kwargs[k] + "\"" + " system {\n" + \
-                                    "        deviations [not_available]\n" + \
-                                    "    }\n")
+        # if root component was found, find end of component line
+        if not(root_not_found):
+            j = 0
+            for line in contents:
+                j = j + 1
+                if j > i and line.startswith(end_of_function):
+                    break
 
-    write_to_file(contents)
+            # check if input keys already exist in the root component
+            x = 0
+            for line in contents:
+                x = x + 1
+                # only check in the specific component, allowing for identical across components
+                if(x > i and x < j):
+                    for k in kwargs:
+                        check = "function " + k
+                        if check in line:
+                            existing_keys.append(k)
+
+        # if the root component does not exist, add end bracket for it
+        if(root_not_found):
+            contents.insert(i, "}\n\n")
+
+        # insert uav components.
+        for k in kwargs:
+            # if key already exists, don't insert, obviously
+            if k not in existing_keys:
+                contents.insert(i, tab*tabs + "function " + k + " \"" + kwargs[k] + "\"" + " system {\n" + \
+                                        tab*(tabs + 1) + "deviations [not_available] \n" + \
+                                        tab*tabs + "}\n")
+
+        # if the root component does not exist, create it.
+        if(root_not_found):
+            contents.insert(i, "function " + args[0] + " \"" + args[1] + "\" system {" + "\n")
+
+        write_to_file(contents)
 
 def allocate(**kwargs):
     """
+    Function for allocating functions to physcial components from the physical architecture.
+    Valid input:
+    [function]=[allocation]
     """
+
+    tab = "    "
+
     with open(fname, "r") as f:
         contents = f.readlines()
 
@@ -175,9 +154,11 @@ def allocate(**kwargs):
             for line in contents:
                 i = i + 1
                 if k in line:
+                    indents = line.index(k) - 5
+                    tabs = int(indents / 4)
                     index = i
                     break
-            contents.insert(index, "        allocations [" + kwargs[k] + "]\n")
+            contents.insert(index, tab*tabs + "allocations [" + kwargs[k] + "]\n")
 
     write_to_file(contents)
 
