@@ -4,6 +4,15 @@ physical decomposition 1.1 test
 
 component uas "Unmanned Aerial System" system {
     component uav "Unmanned_aerial_vehicle" system {
+        component daa "DAA_system" system {
+            failure modes [daa_fail "DAA_system failure"]
+        }
+        component uav_c2 "UAV_C2_link" system {
+            failure modes [uav_c2_fail "UAV_C2_link failure"]
+        }
+        component pwr "Power_system" system {
+            failure modes [pwr_fail "Power_system failure"]
+        }
         component fc "Flight_controller" system {
             failure modes [fc_fail "Flight_controller failure"]
         }
@@ -11,12 +20,20 @@ component uas "Unmanned Aerial System" system {
             failure modes [mr_fail "Multirotor failure"]
         }
     }
-    component hej "Unmanned_aerial_vehicle" system {
-        component fc "Flight_controller" system {
-            failure modes [fc_fail "Flight_controller failure"]
+    component gcs "Ground_control_system" system {
+        component pwr "Power_supply" system {
+            failure modes [pwr_fail "Power_supply failure"]
         }
-        component mr "Multirotor" system {
-            failure modes [mr_fail "Multirotor failure"]
+        component gcs_c2 "GCS_C2_link" system {
+            failure modes [gcs_c2_fail "GCS_C2_link failure"]
+        }
+        component hmi "Human_machince_interface" system {
+            failure modes [hmi_fail "Human_machince_interface failure"]
+        }
+    }
+    component tx "Transmitter" system {
+        component tx_c2 "TX_C2_link" system {
+            failure modes [tx_c2_fail "TX_C2_link failure"]
         }
     }
 }

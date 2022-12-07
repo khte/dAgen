@@ -1,8 +1,7 @@
-
-#physical create_physarch test
-#physical load_physarch test
-#physical add_component uav Unmanned_aerial_vehicle mr=Multirotor fc=Flight_controller
-#physical add_component hej Unmanned_aerial_vehicle mr=Multirotor fc=Flight_controller
+physical create_physarch test
+physical add_component uav Unmanned_aerial_vehicle mr=Multirotor fc=Flight_controller pwr=Power_system uav_c2=UAV_C2_link daa=DAA_system
+physical add_component gcs Ground_control_system hmi=Human_machince_interface gcs_c2=GCS_C2_link pwr=Power_supply
+physical add_component tx Transmitter tx_c2=TX_C2_link
 
 functional create_funcspec test
 functional aviate_functions est_alt=Estimate_altitude est_pos=Estimate_position ctrl_alt=Control_altitude ctrl_lat=Control_lateral_position
