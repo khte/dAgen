@@ -38,7 +38,7 @@ def create_physarch(filename):
     other functions. If a file with the same name exists it is overwritten.
     Input: filename without extension.
     """
-    global f, fname
+    global fname
     fname = filename + ".physarch"
     f = open(fname, "w")
     # write start text plus outer wrapper component uas to empty file
@@ -49,7 +49,7 @@ def create_physarch(filename):
     f.close()
 
 def load_physarch(filename):
-    global f, fname
+    global fname
     fname = filename + ".physarch"
     try:
         f = open(fname, "r")
